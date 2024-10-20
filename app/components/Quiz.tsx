@@ -2,58 +2,44 @@ import React, { useState, useEffect } from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
 import Question from './Question';
 
-// Define the type of a question
-interface QuestionType {
-  question: string;
-  options: string[];
-  answer: number; // Index of the correct answer in the options array
-}
-
-// Define the type for the questionsByCategory object
-interface QuestionsByCategoryType {
-  [key: string]: QuestionType[];
-}
-
-// Quiz component props
 interface QuizProps {
   category: string;
   onQuizFinish: (score: number) => void;
 }
 
-// Questions organized by category
-const questionsByCategory: QuestionsByCategoryType = {
+const questionsByCategory = {
   'General Knowledge': [
     {
       question: "What is the capital of France?",
       options: ["Paris", "Berlin", "Madrid", "Rome"],
-      answer: 0,
+      answer: 0
     },
     {
       question: "Who wrote 'Romeo and Juliet'?",
       options: ["Mark Twain", "Shakespeare", "Dickens", "Austen"],
-      answer: 1,
+      answer: 1
     },
     {
-      question: "Which is the largest ocean?",
-      options: ["Atlantic", "Indian", "Pacific", "Arctic"],
-      answer: 2,
+      question: "Which country is the largest by land area?",
+      options: ["Russia", "Canada", "USA", "China"],
+      answer: 0
     },
     {
       question: "How many continents are there?",
       options: ["5", "6", "7", "8"],
-      answer: 2,
+      answer: 2
     },
     {
-      question: "Which country hosted the 2016 Summer Olympics?",
-      options: ["China", "Brazil", "USA", "Russia"],
-      answer: 1,
-    },
+      question: "In which city is the famous 'Big Ben' located?",
+      options: ["New York", "Paris", "London", "Berlin"],
+      answer: 2
+    }
   ],
   'Science & Tech': [
     {
       question: "Which planet is known as the Red Planet?",
       options: ["Earth", "Mars", "Jupiter", "Saturn"],
-      answer: 1,
+      answer: 1
     },
     {
       question: "What is the speed of light?",
@@ -63,81 +49,82 @@ const questionsByCategory: QuestionsByCategoryType = {
         "300,000,000 meters per second",
         "100,000 miles per second"
       ],
-      answer: 0,
+      answer: 0
     },
     {
       question: "What is the chemical symbol for water?",
-      options: ["H2O", "O2", "H2", "CO2"],
-      answer: 0,
+      options: ["H", "H2O", "O2", "HO"],
+      answer: 1
     },
     {
-      question: "Which gas is most abundant in Earth's atmosphere?",
-      options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Helium"],
-      answer: 2,
+      question: "Who invented the telephone?",
+      options: ["Thomas Edison", "Nikola Tesla", "Alexander Graham Bell", "Guglielmo Marconi"],
+      answer: 2
     },
     {
-      question: "What is the atomic number of carbon?",
-      options: ["6", "8", "12", "14"],
-      answer: 0,
-    },
+      question: "What is the powerhouse of the cell?",
+      options: ["Nucleus", "Mitochondria", "Ribosome", "Cell Membrane"],
+      answer: 1
+    }
   ],
   'History': [
     {
       question: "Who was the first President of the United States?",
       options: ["Abraham Lincoln", "George Washington", "Thomas Jefferson", "John Adams"],
-      answer: 1,
+      answer: 1
     },
     {
-      question: "In which year did World War II end?",
+      question: "What year did World War II end?",
       options: ["1941", "1945", "1946", "1950"],
-      answer: 1,
+      answer: 1
     },
     {
-      question: "What was the name of the ship that brought the Pilgrims to America?",
-      options: ["Santa Maria", "Mayflower", "Pinta", "Nina"],
-      answer: 1,
+      question: "In which year was the Berlin Wall torn down?",
+      options: ["1961", "1972", "1989", "1991"],
+      answer: 2
     },
     {
       question: "Who discovered America?",
-      options: ["Christopher Columbus", "Leif Erikson", "Marco Polo", "Vasco da Gama"],
-      answer: 0,
+      options: ["Christopher Columbus", "Amerigo Vespucci", "Ferdinand Magellan", "Leif Erikson"],
+      answer: 0
     },
     {
-      question: "Which empire was ruled by Julius Caesar?",
-      options: ["Greek", "Roman", "Ottoman", "Byzantine"],
-      answer: 1,
-    },
+      question: "Which Egyptian queen was known for her beauty and her role in politics?",
+      options: ["Nefertiti", "Cleopatra", "Hatshepsut", "Ankhesenamun"],
+      answer: 1
+    }
   ],
   'Computer Science': [
     {
       question: "What does RAM stand for?",
       options: ["Random Access Memory", "Read Access Memory", "Random All Memory", "Read All Memory"],
-      answer: 0,
+      answer: 0
     },
     {
       question: "Who is considered the father of computers?",
       options: ["Bill Gates", "Steve Jobs", "Charles Babbage", "Alan Turing"],
-      answer: 2,
+      answer: 2
     },
     {
-      question: "Which programming language is known for web development?",
-      options: ["Python", "C++", "JavaScript", "Swift"],
-      answer: 2,
+      question: "What is the main function of an operating system?",
+      options: ["Manage hardware resources", "Run programs", "Store files", "Connect to the internet"],
+      answer: 0
     },
     {
-      question: "What does HTTP stand for?",
-      options: ["Hypertext Transfer Protocol", "Hyperlink Transfer Protocol", "Home Transfer Protocol", "Host Transfer Protocol"],
-      answer: 0,
+      question: "Which programming language is primarily used for Android app development?",
+      options: ["Swift", "Java", "Kotlin", "Python"],
+      answer: 2
     },
     {
-      question: "Which company developed the Java programming language?",
-      options: ["Microsoft", "Apple", "Oracle", "Sun Microsystems"],
-      answer: 3,
-    },
-  ],
+      question: "What does HTML stand for?",
+      options: ["HyperText Markup Language", "HyperTest Machine Language", "HighText Machine Language", "HyperTest Markup Language"],
+      answer: 0
+    }
+  ]
 };
 
-const TOTAL_TIME = 10; // Time limit per question (in seconds)
+
+const TOTAL_TIME = 10; // Set time limit per question (in seconds)
 
 const Quiz: React.FC<QuizProps> = ({ category, onQuizFinish }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -151,7 +138,7 @@ const Quiz: React.FC<QuizProps> = ({ category, onQuizFinish }) => {
   // Timer Effect
   useEffect(() => {
     if (timeLeft === 0) {
-      handleNextQuestion(); // Move to the next question when time runs out
+      handleNextQuestion(); // Move to next question when time runs out
     }
 
     const timerId = setTimeout(() => {
@@ -172,7 +159,7 @@ const Quiz: React.FC<QuizProps> = ({ category, onQuizFinish }) => {
   const handleNextQuestion = () => {
     setShowAnswer(false);
     setSelectedAnswer(null);
-    setTimeLeft(TOTAL_TIME); // Reset timer for the next question
+    setTimeLeft(TOTAL_TIME); // Reset timer for next question
 
     if (currentQuestionIndex < questionsByCategory[category].length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
